@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 import {
   Box,
@@ -63,6 +64,12 @@ function formatDate(value) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   const [data, setData] = useState({
     profile: {},
@@ -480,10 +487,19 @@ export default function Dashboard() {
         </Card>
       </Box>
 
-      <Alert severity="info">
-        Dashboard ini menggunakan data simulasi dari browser.
-        Data belum tersinkronisasi dengan akun atau server.
-      </Alert>
+    <Alert severity="info">
+      Dashboard ini menggunakan data simulasi dari browser.
+      Data belum tersinkronisasi dengan akun atau server.
+    </Alert>
+
+    <Button
+      variant="outlined"
+      color="primary"
+      onClick={handleLogout}
+      sx={{ mt: 3 }}
+    >
+      Logout
+    </Button>
     </Box>
   );
 }
