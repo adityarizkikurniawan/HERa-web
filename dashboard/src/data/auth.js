@@ -16,12 +16,12 @@ export const demoAccounts = [
     password: "demo123",
     role: "admin",
   },
-  {
+    {
     id: 3,
-    name: "Dr. Swono",
-    email: "psikolog@hera.com",
+    name: "Mentor HERa",
+    email: "mentor@hera.com",
     password: "demo123",
-    role: "psikolog",
+    role: "mentor",
   },
 ];
 

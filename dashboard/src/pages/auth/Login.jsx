@@ -15,10 +15,11 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
+import { findMentor, setSession } from "../mentor/mentorshipStore";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();;
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,34 +27,50 @@ export default function Login() {
   const [error, setError] = useState("");
 
 
-const handleLogin = (e) => {
-  e.preventDefault();
-  setError("");
 
-  const account = getAccounts().find(
-    (item) =>
-      item.email === email.trim().toLowerCase() &&
-      item.password === password
-  );
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
 
-  if (!account) {
-    setError("Email atau password tidak sesuai.");
-    return;
-  }
+    // Periksa akun mentor terlebih dahulu
+    const mentor = findMentor(email, password);
 
-  // Simpan sesi sekaligus perbarui state AuthContext
-  login(account);
+    if (mentor) {
+      setSession(mentor.id);
 
-  // Arahkan berdasarkan role
-  if (account.role === "admin") {
-    navigate("/admin/dashboard", { replace: true });
-  } else if (account.role === "psikolog") {
-    navigate("/psikolog/dashboard", { replace: true });
-  } else {
-    navigate("/", { replace: true });
-  }
-};
-    
+      login({
+        id: mentor.id,
+        name: mentor.name,
+        email: mentor.email,
+        role: "mentor",
+      });
+
+      navigate("/mentor", { replace: true });
+      return;
+    }
+
+    // Jika bukan mentor, periksa akun pengguna biasa
+    const account = getAccounts().find(
+      (item) =>
+        item.email === email.trim().toLowerCase() &&
+        item.password === password
+    );
+
+    if (!account) {
+      setError("Email atau password tidak sesuai.");
+      return;
+    }
+
+    login(account);
+
+    if (account.role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
+
 
   return (
     <Box

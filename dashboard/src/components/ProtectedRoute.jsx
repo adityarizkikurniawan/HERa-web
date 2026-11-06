@@ -1,7 +1,8 @@
+
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute({ allowedRoles }) {
+export default function ProtectedRoute({ allowedRoles = [] }) {
   const { user } = useAuth();
 
   if (!user) {
@@ -12,7 +13,8 @@ export default function ProtectedRoute({ allowedRoles }) {
     const redirect = {
       user: "/",
       admin: "/admin/dashboard",
-      psikolog: "/psikolog/dashboard",
+      mentor: "/mentor",
+      
     };
 
     return (

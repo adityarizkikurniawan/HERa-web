@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 import {
   Box,
@@ -130,7 +131,7 @@ export default function Mentorship() {
       return [];
     }
   });
-
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Semua Bidang");
   const [selectedMentor, setSelectedMentor] = useState(null);
@@ -208,12 +209,18 @@ export default function Mentorship() {
 
     const newRequest = {
       id: crypto.randomUUID(),
-      mentorId: selectedMentor.id,
+      mentorId: String(selectedMentor.id),
       mentorName: selectedMentor.name,
       field: selectedMentor.field,
+
+      // Data pengguna yang mengajukan mentoring
+      userId: user?.id || null,
+      menteeName: user?.name || "Pengguna HERa",
+      email: user?.email || "",
+
       date,
       goal: goal.trim(),
-      status: "Menunggu (Demo)",
+      status: "Menunggu",
       createdAt: new Date().toISOString(),
     };
 
